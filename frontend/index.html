@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧城市数据可视化大屏</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- 背景装饰 -->
+      <div class="bg-decoration">
+        <div class="bg-line bg-line-1"></div>
+        <div class="bg-line bg-line-2"></div>
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+      </div>
+
+      <!-- 顶部标题栏 -->
+      <header class="header">
+        <div class="header-left">
+          <div class="header-decoration"></div>
+        </div>
+        <div class="header-center">
+          <h1 class="main-title">
+            <span class="title-icon">◆</span>
+            智慧城市数据可视化平台
+            <span class="title-icon">◆</span>
+          </h1>
+          <div class="title-line"></div>
+        </div>
+        <div class="header-right">
+          <div class="datetime-box">
+            <span class="date" id="currentDate"></span>
+            <span class="time" id="currentTime"></span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 主体内容区 -->
+      <main class="main-content">
+        <!-- 左侧面板 -->
+        <aside class="panel panel-left">
+          <!-- 数据统计卡片 -->
+          <section class="panel-section stats-section">
+            <div class="section-header">
+              <span class="section-icon">📊</span>
+              <h2 class="section-title">核心数据指标</h2>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div
+                  class="stat-icon"
+                  style="background: linear-gradient(135deg, #00d4ff, #0099cc)"
+                >
+                  <span>👥</span>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" data-target="1286453">0</span>
+                  <span class="stat-label">总用户数</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div
+                  class="stat-icon"
+                  style="background: linear-gradient(135deg, #00ff88, #00cc6a)"
+                >
+                  <span>📦</span>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" data-target="89562">0</span>
+                  <span class="stat-label">今日订单</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div
+                  class="stat-icon"
+                  style="background: linear-gradient(135deg, #ffd93d, #ffb800)"
+                >
+                  <span>💰</span>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" data-target="3256890">0</span>
+                  <span class="stat-label">交易金额</span>
+                  <span class="stat-unit">元</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div
+                  class="stat-icon"
+                  style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a)"
+                >
+                  <span>🏢</span>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-value" data-target="2847">0</span>
+                  <span class="stat-label">入驻企业</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 柱状图 -->
+          <section class="panel-section chart-section">
+            <div class="section-header">
+              <span class="section-icon">📈</span>
+              <h2 class="section-title">月度数据统计</h2>
+            </div>
+            <div class="chart-container" id="barChart"></div>
+          </section>
+
+          <!-- 环形图 -->
+          <section class="panel-section chart-section">
+            <div class="section-header">
+              <span class="section-icon">🎯</span>
+              <h2 class="section-title">业务类型分布</h2>
+            </div>
+            <div class="chart-container" id="pieChart"></div>
+          </section>
+        </aside>
+
+        <!-- 中央区域 -->
+        <div class="panel panel-center">
+          <!-- 核心数据展示 -->
+          <section class="center-main">
+            <div class="center-stats">
+              <div class="center-stat-item">
+                <div class="center-stat-value">
+                  <span class="big-number" id="totalAmount">9,876,543,210</span>
+                  <span class="unit">元</span>
+                </div>
+                <div class="center-stat-label">平台累计交易总额</div>
+                <div class="center-stat-trend up">
+                  <span class="trend-icon">↑</span>
+                  <span class="trend-value">12.5%</span>
+                  <span class="trend-text">较昨日</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 城市业务量图表 -->
+            <div class="map-container" id="mapChart"></div>
+
+            <!-- 图例 -->
+            <div class="map-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #00ff88"></span>
+                <span class="legend-text">TOP4 城市</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #00d4ff"></span>
+                <span class="legend-text">中等城市</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #ffd93d"></span>
+                <span class="legend-text">发展中城市</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 实时数据滚动 -->
+          <section class="panel-section scroll-section">
+            <div class="section-header">
+              <span class="section-icon">🔔</span>
+              <h2 class="section-title">实时动态</h2>
+              <span class="live-dot"></span>
+            </div>
+            <div class="scroll-container">
+              <div class="scroll-content" id="scrollContent">
+                <!-- 动态内容由 JS 生成 -->
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- 右侧面板 -->
+        <aside class="panel panel-right">
+          <!-- 折线图 -->
+          <section class="panel-section chart-section">
+            <div class="section-header">
+              <span class="section-icon">📉</span>
+              <h2 class="section-title">趋势分析</h2>
+            </div>
+            <div class="chart-container" id="lineChart"></div>
+          </section>
+
+          <!-- 排行榜 -->
+          <section class="panel-section rank-section">
+            <div class="section-header">
+              <span class="section-icon">🏆</span>
+              <h2 class="section-title">区域排行榜</h2>
+            </div>
+            <div class="rank-list" id="rankList">
+              <!-- 排行内容由 JS 生成 -->
+            </div>
+          </section>
+
+          <!-- 进度条组 -->
+          <section class="panel-section progress-section">
+            <div class="section-header">
+              <span class="section-icon">⚡</span>
+              <h2 class="section-title">目标完成度</h2>
+            </div>
+            <div class="progress-list">
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">销售目标</span>
+                  <span class="progress-value">78%</span>
+                </div>
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    style="
+                      width: 78%;
+                      background: linear-gradient(90deg, #00d4ff, #00ff88);
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">用户增长</span>
+                  <span class="progress-value">92%</span>
+                </div>
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    style="
+                      width: 92%;
+                      background: linear-gradient(90deg, #00ff88, #ffd93d);
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">市场覆盖</span>
+                  <span class="progress-value">65%</span>
+                </div>
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    style="
+                      width: 65%;
+                      background: linear-gradient(90deg, #ffd93d, #ff6b6b);
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">服务满意度</span>
+                  <span class="progress-value">88%</span>
+                </div>
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    style="
+                      width: 88%;
+                      background: linear-gradient(90deg, #00d4ff, #a855f7);
+                    "
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </main>
+
+      <!-- 底部信息栏 -->
+      <footer class="footer">
+        <div class="footer-left">
+          <span class="status-item">
+            <span class="status-dot online"></span>
+            系统状态: 正常运行
+          </span>
+          <span class="status-item">
+            <span class="status-dot online"></span>
+            数据同步: 实时
+          </span>
+        </div>
+        <div class="footer-center">
+          <span class="copyright"
+            >© 2024 智慧城市数据可视化平台 | 技术支持</span
+          >
+        </div>
+        <div class="footer-right">
+          <span class="status-item"
+            >服务器负载: <span class="load-value">23%</span></span
+          >
+          <span class="status-item"
+            >在线用户: <span class="online-users">12,847</span></span
+          >
+        </div>
+      </footer>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

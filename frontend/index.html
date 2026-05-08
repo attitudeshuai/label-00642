@@ -6,6 +6,7 @@
     <title>智慧城市数据可视化大屏</title>
     <link rel="stylesheet" href="css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   </head>
   <body>
     <div class="dashboard-container">
@@ -31,6 +32,12 @@
           <div class="title-line"></div>
         </div>
         <div class="header-right">
+          <div class="header-actions">
+            <button class="export-btn" id="exportBtn" title="导出数据">
+              <span class="export-icon">📥</span>
+              <span class="export-text">导出Excel</span>
+            </button>
+          </div>
           <div class="datetime-box">
             <span class="date" id="currentDate"></span>
             <span class="time" id="currentTime"></span>

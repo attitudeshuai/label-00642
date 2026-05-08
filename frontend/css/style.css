@@ -194,8 +194,15 @@ body {
 
 .header-left,
 .header-right {
-  width: 250px;
+  width: 300px;
   flex-shrink: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
 }
 
 .header-decoration {
@@ -256,6 +263,46 @@ body {
     var(--color-primary),
     transparent
   );
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 136, 0.2));
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-family);
+}
+
+.export-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(0, 255, 136, 0.4));
+  border-color: var(--color-primary);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.export-btn:active {
+  transform: translateY(0);
+}
+
+.export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.export-icon {
+  font-size: 14px;
 }
 
 .datetime-box {

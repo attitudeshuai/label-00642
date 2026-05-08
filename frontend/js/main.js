@@ -20,6 +20,7 @@ const Dashboard = {
     this.initRankList();
     this.initScrollContent();
     this.initProgressBars();
+    this.initExportButton();
 
     // 初始化图表
     ChartManager.initAllCharts();
@@ -280,14 +281,163 @@ const Dashboard = {
     const newValue = MockData.generateRandomValue(baseValue, 0.001);
     bigNumber.textContent = this.formatNumber(newValue);
   },
+
+  /**
+   * 初始化导出按钮
+   */
+  initExportButton() {
+    const exportBtn = document.getElementById("exportBtn");
+    if (!exportBtn) return;
+
+    exportBtn.addEventListener("click", () => {
+      this.exportToExcel();
+    });
+  },
+
+  /**
+   * 导出数据到 Excel
+   */
+  exportToExcel() {
+    const exportBtn = document.getElementById("exportBtn");
+    if (exportBtn) {
+      exportBtn.disabled = true;
+      exportBtn.innerHTML = '<span class="export-icon">⏳</span><span class="export-text">导出中...</span>';
+    }
+
+    try {
+      const now = new Date();
+      const exportDateTime = this.formatDateTime(now);
+      const fileName = `智慧城市数据_${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}.xlsx`;
+
+      const wb = XLSX.utils.book_new();
+      const statsSheet = this.createStatsSheet(exportDateTime);
+      const rankingSheet = this.createRankingSheet(exportDateTime);
+      const summarySheet = this.createSummarySheet(exportDateTime);
+
+      XLSX.utils.book_append_sheet(wb, summarySheet, "汇总数据");
+      XLSX.utils.book_append_sheet(wb, statsSheet, "数据指标");
+      XLSX.utils.book_append_sheet(wb, rankingSheet, "区域排行");
+
+      XLSX.writeFile(wb, fileName);
+    } catch (error) {
+      console.error("导出失败:", error);
+      alert("导出失败，请重试");
+    } finally {
+      if (exportBtn) {
+        exportBtn.disabled = false;
+        exportBtn.innerHTML = '<span class="export-icon">📥</span><span class="export-text">导出Excel</span>';
+      }
+    }
+  },
+
+  /**
+   * 格式化完整日期时间
+   */
+  formatDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+  },
+
+  /**
+   * 创建汇总数据 Sheet
+   */
+  createSummarySheet(exportDateTime) {
+    const data = [
+      ["智慧城市数据可视化平台 - 数据导出"],
+      [],
+      ["导出时间", exportDateTime],
+      [],
+    ];
+
+    const statCards = document.querySelectorAll(".stat-card");
+    statCards.forEach((card) => {
+      const label = card.querySelector(".stat-label")?.textContent || "";
+      const value = card.querySelector(".stat-value")?.textContent || "";
+      const unit = card.querySelector(".stat-unit")?.textContent || "";
+      data.push([label, value + (unit ? " " + unit : "")]);
+    });
+
+    data.push([]);
+    const totalAmountEl = document.getElementById("totalAmount");
+    if (totalAmountEl) {
+      data.push(["平台累计交易总额", totalAmountEl.textContent + " 元"]);
+    }
+
+    data.push([]);
+    const loadValue = document.querySelector(".load-value")?.textContent || "";
+    const onlineUsers = document.querySelector(".online-users")?.textContent || "";
+    data.push(["服务器负载", loadValue]);
+    data.push(["在线用户数", onlineUsers]);
+
+    return XLSX.utils.aoa_to_sheet(data);
+  },
+
+  /**
+   * 创建数据指标 Sheet
+   */
+  createStatsSheet(exportDateTime) {
+    const data = [
+      ["核心数据指标"],
+      [],
+      ["导出时间", exportDateTime],
+      [],
+      ["指标名称", "数值", "单位", "说明"],
+    ];
+
+    const statCards = document.querySelectorAll(".stat-card");
+    statCards.forEach((card) => {
+      const label = card.querySelector(".stat-label")?.textContent || "";
+      const value = card.querySelector(".stat-value")?.textContent || "";
+      const unit = card.querySelector(".stat-unit")?.textContent || "";
+      data.push([label, value, unit || "-", "实时统计"]);
+    });
+
+    return XLSX.utils.aoa_to_sheet(data);
+  },
+
+  /**
+   * 创建区域排行榜 Sheet
+   */
+  createRankingSheet(exportDateTime) {
+    const data = [
+      ["区域排行榜"],
+      [],
+      ["导出时间", exportDateTime],
+      [],
+      ["排名", "区域名称", "业务量", "占比"],
+    ];
+
+    const rankItems = document.querySelectorAll(".rank-item");
+    rankItems.forEach((item, index) => {
+      const rankNum = index + 1;
+      const name = item.querySelector(".rank-name")?.textContent || "";
+      const value = item.querySelector(".rank-value")?.textContent || "";
+      const barFill = item.querySelector(".rank-bar-fill");
+      const percent = barFill ? barFill.style.width : "";
+      data.push([rankNum, name, value, percent]);
+    });
+
+    return XLSX.utils.aoa_to_sheet(data);
+  },
 };
 
 // 页面加载完成后初始化
 document.addEventListener("DOMContentLoaded", () => {
-  // 延迟初始化，确保 DOM 完全渲染且容器有尺寸
-  setTimeout(() => {
-    Dashboard.init();
-  }, 200);
+  const checkDependencies = () => {
+    if (typeof echarts === "undefined" || typeof XLSX === "undefined") {
+      setTimeout(checkDependencies, 100);
+      return;
+    }
+    setTimeout(() => {
+      Dashboard.init();
+    }, 200);
+  };
+  checkDependencies();
 });
 
 // 窗口大小变化时重新调整图表
